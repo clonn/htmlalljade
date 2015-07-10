@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+var livereload = require('../index');
+var package = require("../package.json");
+
+var srcFolder;
+var destFolder;
+
+srcFolder  = process.argv[2] || process.argv[1];
+destFolder = process.argv[3] || process.argv[2];
+
+if (srcFolder === destFolder) {
+  console.log('please use cli: html2jade src');
+  console.log('it can solve your problem now');
+  return;
+}
+
+console.log('htmlalljade version: ' + package.version);
+console.log('htmlalljade running');
+
+livereload.start();

@@ -17,11 +17,9 @@ module.exports = {
     return userPath = path.join(target, userPath);
   },
 
-  pathWalker: function(userPath, dest) {
+  pathWalker: function(dest, userPath) {
     var self = this;
     var createDirPath = this.resolvePath(dest, userPath);
-    console.log("path walker")
-    console.log(createDirPath);
     fsX.mkdirsSync(createDirPath);
   },
 
@@ -40,27 +38,21 @@ module.exports = {
       // entryType: 'file'
     })
     .on('data', function (entry) {
-      console.log("-- entry");
 
-      self.pathWalker(entry.parentDir, destPath);
+      self.pathWalker(destPath, entry.parentDir);
       // html2jade
       // console.log(entry);
       var html = fs.readFileSync(entry.fullPath);
-      html2jade.convertHtml(html, {}, function (err, jade) {
-        var target = path.join(destPath, entry.parentDir);
-        fs.writeFileSync(jade, target);
+      html2jade.convertHtml(html, {bodyless: true}, function (err, jade) {
+        var target = path.join(destPath, entry.path.replace("html", "jade"));
+
+        fs.writeFileSync(target, jade);
       });
 
       // do something with each JavaScript file entry
     })
     .on('end', function (data) {
-    //   console.log("end of ...")
-    //   // var bufferTarget = stats.Directory.pop();
-    //   // var target = bufferTarget.split(stats.Directory[0]);
-    //   // self.pathWalker(destPath, target);
-      console.log("-- end");
-      console.log(data)
-    //   // console.log(stat)
+      console.log("read file end");
       cb(data);   
     })
     // .walk();

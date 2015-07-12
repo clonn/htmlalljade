@@ -42,8 +42,14 @@ module.exports = {
       self.pathWalker(destPath, entry.parentDir);
       // html2jade
       // console.log(entry);
-      var html = fs.readFileSync(entry.fullPath);
-      html2jade.convertHtml(html, {bodyless: true}, function (err, jade) {
+      var html = fs.readFileSync(entry.fullPath, "utf8");
+      var option = {
+        donotencode: true
+      };
+      if (html.match(/<head>|<body>/g)) {
+        option.bodyless = true;
+      }
+      html2jade.convertHtml(html, option, function (err, jade) {
         var target = path.join(destPath, entry.path.replace("html", "jade"));
 
         fs.writeFileSync(target, jade);
